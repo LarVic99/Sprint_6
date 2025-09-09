@@ -1,7 +1,6 @@
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 import allure
-from locators.main_page_locators import MainPageLocators
 
 
 class BasePage:
@@ -39,7 +38,6 @@ class BasePage:
 
     @allure.step('Получить заголовок страницы')
     def get_page_title(self):
-        self.wait.until(EC.presence_of_element_located(MainPageLocators.title_dzen))
         return self.driver.title
 
     @allure.step('Проверить отображение элемента')
@@ -48,3 +46,6 @@ class BasePage:
             return self.wait_visibility_of_element(locator).is_displayed()
         except:
             return False
+    @allure.step("Подождать полной загрузки страницы")
+    def wait_for_page_loaded(self, timeout=10):
+        self.wait.until(lambda driver: driver.execute_script("return document.readyState") == "complete")

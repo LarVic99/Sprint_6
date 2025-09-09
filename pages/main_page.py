@@ -55,3 +55,9 @@ class MainPage(BasePage):
     @allure.step('Получить текст нужного номера ответа в аккордеоне "Вопросы о важном"')
     def get_displayed_text_from_faq_answer(self, data):
         return self.get_text_on_element(MainPageLocators.faq_answers[data])    
+    
+    @allure.step("Переключиться на следующую вкладку")
+    def switch_to_next_tab(self):
+        super().switch_to_next_tab()
+        self.wait_for_page_loaded() 
+

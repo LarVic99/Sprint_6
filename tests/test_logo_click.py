@@ -1,40 +1,30 @@
+import allure
 import pytest
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+from pages.main_page import MainPage
 
-
+@allure.suite("Проверка логотипов")
 class TestLogo:
 
+    @allure.title("Проверка клика по логотипу 'Самокат'")
     def test_logo_main_page(self, driver):
-        # кликаем по лого "Самокат"
-        logo = WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable((By.CLASS_NAME, "Header_LogoScooter__3lsAR"))
-        )
-        logo.click()
+        main_page = MainPage(driver)
 
-        # ждем, пока URL станет главной страницей
-        WebDriverWait(driver, 10).until(
-            lambda d: "scooter" in d.current_url or d.current_url.endswith("/")
-        )
+        with allure.step("Кликаем по лого 'Самокат'"):
+            main_page.click_on_header_logo_scooter()  # минимальное исправление
 
-        # финальная проверка по URL вместо title
-        assert "scooter" in driver.current_url or driver.current_url.endswith("/")
+        with allure.step("Проверяем, что открыта главная страница"):
+            assert main_page.check_displaying_of_main_header()
 
+    @allure.title("Проверка клика по логотипу 'Яндекс.Дзен'")
     def test_logo_dzen(self, driver):
-        # кликаем по лого "Яндекс"
-        logo_dzen = WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable((By.CLASS_NAME, "Header_LogoYandex__3TSOI"))
-        )
-        logo_dzen.click()
+        main_page = MainPage(driver)
 
-        # переключаемся на новую вкладку
-        driver.switch_to.window(driver.window_handles[1])
+        with allure.step("Кликаем по лого 'Яндекс'"):
+            main_page.click_on_header_logo_yandex()  # минимальное исправление
 
-        # ждем, пока URL загрузится
-        WebDriverWait(driver, 20).until(
-            lambda d: "dzen" in d.current_url or "yandex" in d.current_url
-        )
+        with allure.step("Переключаемся на вкладку Дзен"):
+            main_page.switch_to_next_tab()  # исправленный метод
 
-        # финальная проверка по URL вместо title
-        assert "dzen" in driver.current_url or "yandex" in driver.current_url
+        with allure.step("Проверяем, что открыт Яндекс или Дзен"):
+            assert "dzen" in driver.current_url or "yandex" in driver.current_url
+
